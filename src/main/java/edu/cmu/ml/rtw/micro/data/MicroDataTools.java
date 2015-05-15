@@ -11,6 +11,8 @@ public class MicroDataTools extends DataTools {
 	
 	public MicroDataTools(OutputWriter outputWriter) {
 		super(outputWriter);		
+		
+		/* Add micro-reading annotation types here */
 		this.addAnnotationTypeNLP(AnnotationTypeNLPCat.NELL_CATEGORY);
 	}
 }
