@@ -24,7 +24,7 @@ public class PipelineNLPMicroTest {
 		DocumentNLP document = new DocumentNLPInMemory(new MicroDataTools(), 
 													   "Test document", 
 													   "I baked a cake in the oven.  Barack Obama helped because I was " +
-													   "the deciding vote in the next presidential election.",
+													   "the deciding vote in the next United States presidential election.",
 													   Language.English, stanfordMicroPipe);
 	
 		List<Annotation> annotations = document.toMicroAnnotation().getAllAnnotations();
