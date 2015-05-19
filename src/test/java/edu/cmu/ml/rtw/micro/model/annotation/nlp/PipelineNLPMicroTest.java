@@ -4,6 +4,9 @@ import java.util.List;
 
 //import org.junit.Test;
 
+
+import org.junit.Test;
+
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLP;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPInMemory;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.Language;
@@ -13,14 +16,15 @@ import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLPStanford;
 import edu.cmu.ml.rtw.micro.data.MicroDataTools;
 
 public class PipelineNLPMicroTest {
-	// FIXME @Test
+	@Test
 	public void testDocument() {
 		PipelineNLPStanford stanfordPipe = new PipelineNLPStanford();
 		PipelineNLPMicro microPipe = new PipelineNLPMicro();
 		PipelineNLP stanfordMicroPipe = stanfordPipe.weld(microPipe);
 		DocumentNLP document = new DocumentNLPInMemory(new MicroDataTools(), 
 													   "Test document", 
-													   "I baked a cake in the oven.  Sam helped.",
+													   "I baked a cake in the oven.  Barack Obama helped because I was " +
+													   "the deciding vote in the next presidential election.",
 													   Language.English, stanfordMicroPipe);
 	
 		List<Annotation> annotations = document.toMicroAnnotation().getAllAnnotations();
