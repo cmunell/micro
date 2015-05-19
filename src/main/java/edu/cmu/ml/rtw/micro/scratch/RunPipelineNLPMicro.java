@@ -41,7 +41,7 @@ public class RunPipelineNLPMicro {
 		if (!parseArgs(args))
 			return;
 		
-		DocumentSetNLP<DocumentNLP> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools));
+		DocumentSetNLP<DocumentNLPInMemory> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools));
 		
 		ThreadMapper<String, Boolean> threads = new ThreadMapper<String, Boolean>(new ThreadMapper.Fn<String, Boolean>() {
 			public Boolean apply(String documentName) {
