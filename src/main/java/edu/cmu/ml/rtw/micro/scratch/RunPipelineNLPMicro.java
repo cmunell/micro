@@ -6,7 +6,6 @@ import java.util.List;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLP;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPInMemory;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentSetNLP;
@@ -41,7 +40,7 @@ public class RunPipelineNLPMicro {
 		if (!parseArgs(args))
 			return;
 		
-		DocumentSetNLP<DocumentNLPInMemory> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools));
+		final DocumentSetNLP<DocumentNLPInMemory> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools));
 		
 		ThreadMapper<String, Boolean> threads = new ThreadMapper<String, Boolean>(new ThreadMapper.Fn<String, Boolean>() {
 			public Boolean apply(String documentName) {
@@ -121,7 +120,7 @@ public class RunPipelineNLPMicro {
 		output.debugWriteln("Finished loading data tools.");
 		
 		outputType = OutputType.valueOf(options.valueOf("outputType").toString());
-		maxThreads = (int)options.valueOf("maxThreads");
+		maxThreads = (Integer)options.valueOf("maxThreads");
 		
 		if (options.has("inputDataPath")) {
 			inputDataPath = (File)options.valueOf("inputDataPath");
