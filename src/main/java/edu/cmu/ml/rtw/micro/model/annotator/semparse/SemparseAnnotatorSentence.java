@@ -36,7 +36,7 @@ import edu.cmu.ml.rtw.users.jayantk.ccg.TypedMention;
 public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
 
   public static final AnnotationTypeNLP<String> LOGICAL_FORM_ANNOTATION_TYPE =
-      new AnnotationTypeNLP<String>("example_type", String.class, Target.TOKEN_SPAN);
+      new AnnotationTypeNLP<String>("logical_form", String.class, Target.TOKEN_SPAN);
   
   private final SupertaggingMentionCcgParser parser;
 
@@ -76,6 +76,7 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
 
   @Override
   public List<Triple<TokenSpan, String, Double>> annotate(DocumentNLP document) {
+    System.out.println("OTHOENUTHAOENTUHANOETUHANOET");
     Multimap<Integer, Pair<TokenSpan, String>> sentenceNpCatAnnotations = HashMultimap.create();
     for (Pair<TokenSpan, String> categorizedSpan : document.getTokenSpanAnnotations(
           AnnotationTypeNLPCat.NELL_CATEGORY)) {
@@ -84,13 +85,17 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
     
     List<Triple<TokenSpan, String, Double>> annotations = Lists.newArrayList();
     for (int i = 0; i < document.getSentenceCount(); i++) {
+      TokenSpan tempSpan = new TokenSpan(document, i, 0, 1);
+      annotations.add(new Triple<TokenSpan, String, Double>(tempSpan,
+                                                            "(foo)", 1.0));
+
       List<String> tokens = document.getSentenceTokenStrs(i);
       List<PoSTag> posTags = document.getSentencePoSTags(i);
       List<String> pos = Lists.newArrayList();
       for (PoSTag posTag : posTags) {
         pos.add(posTag.name());
       }
-      
+
       List<TypedMention> typedMentions = Lists.newArrayList();
       for (Pair<TokenSpan, String> catAnnotation : sentenceNpCatAnnotations.get(i)) {
         int startIndex = catAnnotation.getFirst().getStartTokenIndex();
@@ -115,13 +120,13 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
           Set<MentionRelationInstance> instances = CcgParseUtils.getEntailedRelationInstances(
               spannedExpression.getExpression());
           
-          if (instances.size() > 0) {
+          // if (instances.size() > 0) {
             TokenSpan span = new TokenSpan(document, i, spannedExpression.getSpanStart(),
                 spannedExpression.getSpanEnd() + 1);
             
             annotations.add(new Triple<TokenSpan, String, Double>(span,
                 spannedExpression.getExpression().toString(), 1.0));
-          }
+            // }
         }
       }
     }
