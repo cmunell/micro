@@ -281,11 +281,6 @@
 			<version>4.0.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jayantkrish</groupId>
-			<artifactId>jklol</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-ppa</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
