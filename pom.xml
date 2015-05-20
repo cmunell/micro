@@ -280,6 +280,11 @@
           <artifactId>jklol</artifactId>
           <version>1.0</version>
         </dependency>
+        <dependency>
+          <groupId>semafor-semantic-parser</groupId>
+          <artifactId>semafor-semantic-parser</artifactId>
+          <version>1.0</version>
+        </dependency>
   </dependencies>
   <repositories>      
   	<repository>
