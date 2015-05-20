@@ -21,8 +21,9 @@ public class SemparseAnnotatorSentenceTest {
     PipelineNLPStanford pipelineStanford = new PipelineNLPStanford();
     PipelineNLPExtendable pipelineExtendable = new PipelineNLPExtendable();
 
+    SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
+
     pipelineExtendable.extend(new NELLMentionCategorizer());
-    SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels("src/main/resources/parser.ser", "src/main/resources/supertagger.ser");
     pipelineExtendable.extend(semanticParser);
     PipelineNLP pipeline = pipelineStanford.weld(pipelineExtendable);
     DataTools dataTools = new DataTools();

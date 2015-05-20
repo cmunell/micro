@@ -37,6 +37,9 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
 
   public static final AnnotationTypeNLP<String> LOGICAL_FORM_ANNOTATION_TYPE =
       new AnnotationTypeNLP<String>("logical_form", String.class, Target.TOKEN_SPAN);
+
+  public static final String PARSER_MODEL_PATH="models/semparse/parser.ser";
+  public static final String SUPERTAGGER_MODEL_PATH="models/semparse/supertagger.ser";
   
   private final SupertaggingMentionCcgParser parser;
 

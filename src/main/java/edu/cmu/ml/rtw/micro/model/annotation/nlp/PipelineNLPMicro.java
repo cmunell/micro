@@ -15,7 +15,7 @@ public class PipelineNLPMicro extends PipelineNLP {
      * Initialize micro-readers here
      */
     NELLMentionCategorizer mentionCategorizer = new NELLMentionCategorizer();
-    SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels("src/main/resources/parser.ser", "src/main/resources/supertagger.ser");
+    SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
     AnnotationVerb annotationVerb = new AnnotationVerb();
     PPADisambiguator ppa = new PPADisambiguator();
 

@@ -36,6 +36,11 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>edu.cmu.ml.rtw</groupId>
+			<artifactId>micro-data</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
@@ -288,6 +293,11 @@
 		<dependency>
 		  <groupId>semafor-semantic-parser</groupId>
 		  <artifactId>semafor-semantic-parser</artifactId>
+		  <version>1.0</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.jayantkrish</groupId>
+		  <artifactId>jklol</artifactId>
 		  <version>1.0</version>
 		</dependency>
 		<dependency>
