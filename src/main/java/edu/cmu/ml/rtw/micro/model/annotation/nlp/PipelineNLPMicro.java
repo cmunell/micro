@@ -1,6 +1,7 @@
 package edu.cmu.ml.rtw.micro.model.annotation.nlp;
 
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLP;
+import edu.cmu.ml.rtw.micro.hdp.HDPParser;
 import edu.cmu.ml.rtw.micro.cat.data.annotation.nlp.NELLMentionCategorizer;
 import edu.cmu.ml.rtw.micro.model.annotator.semparse.SemparseAnnotatorSentence;
 import edu.cmu.ml.rtw.ppa.predict.PPADisambiguator;
@@ -18,6 +19,7 @@ public class PipelineNLPMicro extends PipelineNLP {
     SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
     AnnotationVerb annotationVerb = new AnnotationVerb();
     PPADisambiguator ppa = new PPADisambiguator();
+    HDPParser hdpParser = HDPParser.getInstance();
 
     /*
      * Add micro-readers to the pipeline here
@@ -26,6 +28,7 @@ public class PipelineNLPMicro extends PipelineNLP {
     addAnnotator(semanticParser.produces(), semanticParser);
     addAnnotator(annotationVerb.produces(), annotationVerb);
     addAnnotator(ppa.produces(), ppa);
+    addAnnotator(hdpParser.produces(), hdpParser);
   }
 }
 
