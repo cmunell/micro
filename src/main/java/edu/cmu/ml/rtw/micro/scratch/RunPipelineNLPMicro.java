@@ -23,10 +23,9 @@ public class RunPipelineNLPMicro {
 		MICRO,
 		JSON
 	}
-	/* FIXME Add this back in later
-	public static final int DEFAULT_MIN_ANNOTATION_SENTENCE_LENGTH = 2;
+	
 	public static final int DEFAULT_MAX_ANNOTATION_SENTENCE_LENGTH = 30;
-	*/
+
 	private static OutputType outputType;
 	private static int maxThreads;
 	private static File outputDataDir;
@@ -90,14 +89,10 @@ public class RunPipelineNLPMicro {
 		parser.accepts("outputDataDir").withRequiredArg()
 			.describedAs("Path to directory where output should be stored")
 			.ofType(File.class);
-		/*FIXME Add back these options at some pointparser.accepts("minAnnotationSentenceLength").withRequiredArg()
-			.describedAs("Minimum length of sentences that are considered when parsing the document")
-			.ofType(Integer.class)
-			.defaultsTo(DEFAULT_MIN_ANNOTATION_SENTENCE_LENGTH);
 		parser.accepts("maxAnnotationSentenceLength").withRequiredArg()
 			.describedAs("Maximum length of sentences that are considered when parsing the document")
 			.ofType(Integer.class)
-			.defaultsTo(DEFAULT_MAX_ANNOTATION_SENTENCE_LENGTH); */
+			.defaultsTo(DEFAULT_MAX_ANNOTATION_SENTENCE_LENGTH);
 		parser.accepts("outputDebugFile").withRequiredArg()
 			.describedAs("Optional path to debug output file")
 			.ofType(File.class);
@@ -136,7 +131,7 @@ public class RunPipelineNLPMicro {
 			return false;
 		}
 		
-		stanfordPipeline = new PipelineNLPStanford();
+		stanfordPipeline = new PipelineNLPStanford((Integer)options.valueOf("maxAnnotationSentenceLength"));
 		stanfordPipeline.initialize();
 		
 		if (options.has("outputDebugFile")) {
