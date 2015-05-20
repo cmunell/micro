@@ -45,7 +45,6 @@
 			<artifactId>OntologyLearner-nosrc</artifactId>
 			<version>0.20150515.0-SNAPSHOT</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.accumulo</groupId>
 			<artifactId>accumulo-core</artifactId>
@@ -291,8 +290,18 @@
 			<artifactId>micro-ppa</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-	</dependencies>
-	<repositories>
+		<dependency>
+		  <groupId>com.jayantkrish</groupId>
+		  <artifactId>jklol</artifactId>
+		  <version>1.0</version>
+		</dependency>
+		<dependency>
+		  <groupId>semafor-semantic-parser</groupId>
+		  <artifactId>semafor-semantic-parser</artifactId>
+		  <version>1.0</version>
+		</dependency>
+	      </dependencies>
+	      <repositories>
 		<repository>
 			<snapshots>
 				<enabled>false</enabled>
