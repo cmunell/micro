@@ -24,6 +24,11 @@
  		<artifactId>micro-util</artifactId>
  		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+ 		<groupId>edu.cmu.ml.rtw</groupId>
+ 		<artifactId>micro-verb</artifactId>
+ 		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   	  	<dependency>
  		<groupId>edu.cmu.ml.rtw</groupId>
  		<artifactId>micro-cat</artifactId>
