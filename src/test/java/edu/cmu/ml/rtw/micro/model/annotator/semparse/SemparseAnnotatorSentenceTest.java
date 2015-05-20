@@ -11,6 +11,7 @@ import edu.cmu.ml.rtw.generic.data.annotation.nlp.micro.Annotation;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLP;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLPExtendable;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLPStanford;
+import edu.cmu.ml.rtw.micro.cat.data.annotation.nlp.NELLMentionCategorizer;
 import edu.cmu.ml.rtw.generic.data.DataTools;
 
 public class SemparseAnnotatorSentenceTest {
@@ -20,6 +21,7 @@ public class SemparseAnnotatorSentenceTest {
     PipelineNLPStanford pipelineStanford = new PipelineNLPStanford();
     PipelineNLPExtendable pipelineExtendable = new PipelineNLPExtendable();
 
+    pipelineExtendable.extend(new NELLMentionCategorizer());
     SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels("src/main/resources/parser.ser", "src/main/resources/supertagger.ser");
     pipelineExtendable.extend(semanticParser);
     PipelineNLP pipeline = pipelineStanford.weld(pipelineExtendable);
@@ -27,8 +29,8 @@ public class SemparseAnnotatorSentenceTest {
     dataTools.addAnnotationTypeNLP(SemparseAnnotatorSentence.LOGICAL_FORM_ANNOTATION_TYPE);
     DocumentNLP document = new DocumentNLPInMemory(dataTools, 
                                                    "Test document", 
-                                                   "I baked a cake in the oven.  Barack Obama helped because I was " +
-                                                   "the deciding vote in the next presidential election in the United States.",
+                                                   "Barack Obama is the president of the United States. Madonna who was born in Bay City, Michigan. " +
+                                                   "Larry Page founded Google. Google was founded by Larry Page and Sergey Brin.",
                                                    Language.English, pipeline);
     List<Annotation> annotations = document.toMicroAnnotation().getAllAnnotations();
     for (Annotation annotation : annotations) {

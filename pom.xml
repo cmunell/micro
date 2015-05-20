@@ -291,13 +291,13 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-		  <groupId>com.jayantkrish</groupId>
-		  <artifactId>jklol</artifactId>
+		  <groupId>semafor-semantic-parser</groupId>
+		  <artifactId>semafor-semantic-parser</artifactId>
 		  <version>1.0</version>
 		</dependency>
 		<dependency>
-		  <groupId>semafor-semantic-parser</groupId>
-		  <artifactId>semafor-semantic-parser</artifactId>
+		  <groupId>com.google</groupId>
+		  <artifactId>gwt</artifactId>
 		  <version>1.0</version>
 		</dependency>
 	      </dependencies>

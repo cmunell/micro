@@ -76,7 +76,6 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
 
   @Override
   public List<Triple<TokenSpan, String, Double>> annotate(DocumentNLP document) {
-    System.out.println("OTHOENUTHAOENTUHANOETUHANOET");
     Multimap<Integer, Pair<TokenSpan, String>> sentenceNpCatAnnotations = HashMultimap.create();
     for (Pair<TokenSpan, String> categorizedSpan : document.getTokenSpanAnnotations(
           AnnotationTypeNLPCat.NELL_CATEGORY)) {
@@ -85,10 +84,6 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
     
     List<Triple<TokenSpan, String, Double>> annotations = Lists.newArrayList();
     for (int i = 0; i < document.getSentenceCount(); i++) {
-      TokenSpan tempSpan = new TokenSpan(document, i, 0, 1);
-      annotations.add(new Triple<TokenSpan, String, Double>(tempSpan,
-                                                            "(foo)", 1.0));
-
       List<String> tokens = document.getSentenceTokenStrs(i);
       List<PoSTag> posTags = document.getSentencePoSTags(i);
       List<String> pos = Lists.newArrayList();
@@ -99,16 +94,17 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
       List<TypedMention> typedMentions = Lists.newArrayList();
       for (Pair<TokenSpan, String> catAnnotation : sentenceNpCatAnnotations.get(i)) {
         int startIndex = catAnnotation.getFirst().getStartTokenIndex();
-        int endIndex = catAnnotation.getFirst().getEndTokenIndex() - 1;
+        int endIndex = catAnnotation.getFirst().getEndTokenIndex();
         List<String> mentionTokens = Lists.newArrayList();
-        for (int j = startIndex; j <= endIndex; j++) {
+        for (int j = startIndex; j < endIndex; j++) {
           mentionTokens.add(document.getTokenStr(i, j));
         }
         String mentionString = Joiner.on(" ").join(mentionTokens);
-        Set<String> categories = Sets.newHashSet(catAnnotation.getSecond());
+        Set<String> categories = Sets.newHashSet("concept:" + catAnnotation.getSecond());
 
-        typedMentions.add(new TypedMention(mentionString, categories, startIndex, endIndex));
+        typedMentions.add(new TypedMention(mentionString, categories, startIndex + 1, endIndex));
       }
+      System.out.println(typedMentions);
 
       SupertaggedSentence taggedSentence = ListSupertaggedSentence.createWithUnobservedSupertags(                                                
           tokens, pos);
@@ -120,13 +116,13 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
           Set<MentionRelationInstance> instances = CcgParseUtils.getEntailedRelationInstances(
               spannedExpression.getExpression());
           
-          // if (instances.size() > 0) {
+          if (instances.size() > 0) {
             TokenSpan span = new TokenSpan(document, i, spannedExpression.getSpanStart(),
                 spannedExpression.getSpanEnd() + 1);
             
             annotations.add(new Triple<TokenSpan, String, Double>(span,
                 spannedExpression.getExpression().toString(), 1.0));
-            // }
+          }
         }
       }
     }
