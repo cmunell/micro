@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.cmu.ml.rtw</groupId>
 	<artifactId>micro</artifactId>
-	<packaging>jar</packaging>
+	<packaging>nar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
