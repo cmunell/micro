@@ -46,5 +46,12 @@ public class PipelineNLPMicroTest {
     for (Annotation annotation : annotations)
       System.out.println(annotation.toJsonString());
 
+    System.out.println("Annotating Test Document 4, SVO (ish) examples");
+    document = new DocumentNLPInMemory(new MicroDataTools(), "Test document 4",
+        "Butterflies look like moths. Vegetables protect against heart attack.", Language.English, stanfordMicroPipe);
+
+    annotations = document.toMicroAnnotation().getAllAnnotations();
+    for (Annotation annotation : annotations)
+      System.out.println(annotation.toJsonString());
   }
 }

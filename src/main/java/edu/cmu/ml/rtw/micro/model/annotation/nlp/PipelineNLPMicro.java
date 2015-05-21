@@ -31,5 +31,3 @@ public class PipelineNLPMicro extends PipelineNLP {
     addAnnotator(hdpParser.produces(), hdpParser);
   }
 }
-
-
