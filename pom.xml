@@ -6,8 +6,8 @@
 	<packaging>nar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
+		<library_path>${project.build.directory}/nar/micro-hdp-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni/:${project.build.directory}</library_path>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<skipTests>true</skipTests>
 	</properties>
 	<build>
 		<defaultGoal>integration-test</defaultGoal>
@@ -44,6 +44,21 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<environmentVariables>
+						<LD_LIBRARY_PATH>${library_path}</LD_LIBRARY_PATH>
+					</environmentVariables>
+					<systemProperties>
+						<property>
+							<name>java.library.path</name>
+							<value>${library_path}</value>
+						</property>
+					</systemProperties>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
