@@ -6,7 +6,7 @@
 	<packaging>nar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
-		<library_path>${project.build.directory}/nar/micro-hdp-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni/:${project.build.directory}</library_path>
+		<library_path>${project.build.directory}/nar/micro-hdp-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}</library_path>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
@@ -52,12 +52,7 @@
 					<environmentVariables>
 						<LD_LIBRARY_PATH>${library_path}</LD_LIBRARY_PATH>
 					</environmentVariables>
-					<systemProperties>
-						<property>
-							<name>java.library.path</name>
-							<value>${library_path}</value>
-						</property>
-					</systemProperties>
+					<argLine>-Djava.library.path=${library_path}</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
