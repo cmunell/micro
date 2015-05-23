@@ -31,12 +31,12 @@
 							<goal>nar-download</goal>
 						</goals>
 					</execution>
-                                        <execution>
-                                                <id>nar-test-unpack</id>
-                                                <goals>
-                                                        <goal>nar-test-unpack</goal>
-                                                </goals>
-                                        </execution>
+                    <execution>
+                            <id>nar-test-unpack</id>
+                            <goals>
+                                    <goal>nar-test-unpack</goal>
+                            </goals>
+                    </execution>
 					<execution>
 						<id>nar-integration-test</id>
 						<goals>

@@ -48,7 +48,8 @@ public class RunPipelineNLPMicro {
 				dataTools.getOutputWriter().debugWriteln("Processing file " + documentName + "...");
 				
 				PipelineNLPStanford threadStanfordPipeline = new PipelineNLPStanford(stanfordPipeline);
-				PipelineNLP pipeline = threadStanfordPipeline.weld(microPipeline);
+				PipelineNLPMicro threadMicroPipeline = new PipelineNLPMicro(microPipeline);
+				PipelineNLP pipeline = threadStanfordPipeline.weld(threadMicroPipeline);
 				
 				DocumentNLP inputDocument = documentSet.getDocumentByName(documentName, false);
 				DocumentNLP outputDocument = new DocumentNLPInMemory(dataTools, documentName, inputDocument.getOriginalText(), Language.English, pipeline);
