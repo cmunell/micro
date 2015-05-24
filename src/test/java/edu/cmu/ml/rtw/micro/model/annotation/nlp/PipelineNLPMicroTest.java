@@ -4,8 +4,6 @@ import java.util.List;
 
 //import org.junit.Test;
 
-import org.junit.Test;
-
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLP;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPInMemory;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.Language;
@@ -16,7 +14,7 @@ import edu.cmu.ml.rtw.micro.data.MicroDataTools;
 
 public class PipelineNLPMicroTest {
 
-  @Test
+  // FIXME Add back in later @Test
   public void testDocument() {
     PipelineNLPStanford stanfordPipe = new PipelineNLPStanford(30);
     PipelineNLPMicro microPipe = new PipelineNLPMicro();
