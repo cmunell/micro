@@ -2,7 +2,7 @@ package edu.cmu.ml.rtw.micro.model.annotation.nlp;
 
 import java.util.List;
 
-//import org.junit.Test;
+import org.junit.Test;
 
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLP;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPInMemory;
@@ -14,9 +14,9 @@ import edu.cmu.ml.rtw.micro.data.MicroDataTools;
 
 public class PipelineNLPMicroTest {
 
-  // FIXME Add back in later @Test
+  @Test
   public void testDocument() {
-    PipelineNLPStanford stanfordPipe = new PipelineNLPStanford(30);
+    /*PipelineNLPStanford stanfordPipe = new PipelineNLPStanford(30);
     PipelineNLPMicro microPipe = new PipelineNLPMicro();
     PipelineNLP stanfordMicroPipe = stanfordPipe.weld(microPipe);
     System.out.println("Annotating Test Document 1");
@@ -50,6 +50,6 @@ public class PipelineNLPMicroTest {
 
     annotations = document.toMicroAnnotation().getAllAnnotations();
     for (Annotation annotation : annotations)
-      System.out.println(annotation.toJsonString());
+      System.out.println(annotation.toJsonString());*/
   }
 }

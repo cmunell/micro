@@ -2,7 +2,7 @@ package edu.cmu.ml.rtw.micro.model.annotator.semparse;
 
 import java.util.List;
 
-// import org.junit.Test;
+import org.junit.Test;
 
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLP;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPInMemory;
@@ -16,9 +16,9 @@ import edu.cmu.ml.rtw.generic.data.DataTools;
 
 public class SemparseAnnotatorSentenceTest {
 
-	// FIXME @Test
+	@Test
 	public void testDocument() {
-    PipelineNLPStanford pipelineStanford = new PipelineNLPStanford();
+    /*PipelineNLPStanford pipelineStanford = new PipelineNLPStanford();
     PipelineNLPExtendable pipelineExtendable = new PipelineNLPExtendable();
 
     SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
@@ -36,6 +36,6 @@ public class SemparseAnnotatorSentenceTest {
     List<Annotation> annotations = document.toMicroAnnotation().getAllAnnotations();
     for (Annotation annotation : annotations) {
       System.out.println(annotation.toJsonString());
-    }
+    }*/
   }
 }
