@@ -42,13 +42,14 @@ public class RunPipelineNLPMicro {
 		
 		final DocumentSetNLP<DocumentNLPInMemory> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools));
 		List<DocumentSetNLP<DocumentNLPInMemory>> documentSets = documentSet.makePartition(maxThreads, new Random(1), documentSet);
+		PipelineNLPStanford stanfordPipeline = new PipelineNLPStanford(maxAnnotationSentenceLength);
+		stanfordPipeline.initialize();
 		
 		ThreadMapper<DocumentSetNLP<DocumentNLPInMemory>, Boolean> threads = new ThreadMapper<DocumentSetNLP<DocumentNLPInMemory>, Boolean>(new ThreadMapper.Fn<DocumentSetNLP<DocumentNLPInMemory>, Boolean>() {
 			public Boolean apply(DocumentSetNLP<DocumentNLPInMemory> documents) {
-				PipelineNLPStanford stanfordPipeline = new PipelineNLPStanford(maxAnnotationSentenceLength);
-				stanfordPipeline.initialize();
+				PipelineNLPStanford threadStanfordPipeline= new PipelineNLPStanford(stanfordPipeline);
 				PipelineNLPMicro threadMicroPipeline = new PipelineNLPMicro(microPipeline);
-				PipelineNLP pipeline = stanfordPipeline.weld(threadMicroPipeline);
+				PipelineNLP pipeline = threadStanfordPipeline.weld(threadMicroPipeline);
 				
 				for (String documentName : documents.getDocumentNames()) {				
 					dataTools.getOutputWriter().debugWriteln("Processing file " + documentName + "...");
