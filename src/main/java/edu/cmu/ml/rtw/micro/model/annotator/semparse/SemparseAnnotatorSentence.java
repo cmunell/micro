@@ -107,7 +107,7 @@ public class SemparseAnnotatorSentence implements AnnotatorTokenSpan<String> {
 
         typedMentions.add(new TypedMention(mentionString, categories, startIndex + 1, endIndex));
       }
-      System.out.println(typedMentions);
+      //System.out.println(typedMentions);
 
       SupertaggedSentence taggedSentence = ListSupertaggedSentence.createWithUnobservedSupertags(                                                
           tokens, pos);
