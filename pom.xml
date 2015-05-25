@@ -44,6 +44,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<skipNar>true</skipNar>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
