@@ -3,6 +3,7 @@ package edu.cmu.ml.rtw.micro.scratch;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -31,7 +32,7 @@ public class RunPipelineNLPMicro {
 	private static File outputDataDir;
 	private static File inputDataPath;
 	
-	private static PipelineNLPStanford stanfordPipeline;
+	private static int maxAnnotationSentenceLength;
 	private static PipelineNLPMicro microPipeline;
 	private static MicroDataTools dataTools;
 	
@@ -40,32 +41,36 @@ public class RunPipelineNLPMicro {
 			return;
 		
 		final DocumentSetNLP<DocumentNLPInMemory> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools));
+		List<DocumentSetNLP<DocumentNLPInMemory>> documentSets = documentSet.makePartition(maxThreads, new Random(1), documentSet);
 		
-		ThreadMapper<String, Boolean> threads = new ThreadMapper<String, Boolean>(new ThreadMapper.Fn<String, Boolean>() {
-			public Boolean apply(String documentName) {
-				File outputFile = new File(outputDataDir, documentName);
-				
-				dataTools.getOutputWriter().debugWriteln("Processing file " + documentName + "...");
-				
-				PipelineNLPStanford threadStanfordPipeline = new PipelineNLPStanford(stanfordPipeline);
+		ThreadMapper<DocumentSetNLP<DocumentNLPInMemory>, Boolean> threads = new ThreadMapper<DocumentSetNLP<DocumentNLPInMemory>, Boolean>(new ThreadMapper.Fn<DocumentSetNLP<DocumentNLPInMemory>, Boolean>() {
+			public Boolean apply(DocumentSetNLP<DocumentNLPInMemory> documents) {
+				PipelineNLPStanford stanfordPipeline = new PipelineNLPStanford(maxAnnotationSentenceLength);
+				stanfordPipeline.initialize();
 				PipelineNLPMicro threadMicroPipeline = new PipelineNLPMicro(microPipeline);
-				PipelineNLP pipeline = threadStanfordPipeline.weld(threadMicroPipeline);
+				PipelineNLP pipeline = stanfordPipeline.weld(threadMicroPipeline);
 				
-				DocumentNLP inputDocument = documentSet.getDocumentByName(documentName, false);
-				DocumentNLP outputDocument = new DocumentNLPInMemory(dataTools, documentName, inputDocument.getOriginalText(), Language.English, pipeline);
-
-				if (outputType == OutputType.MICRO) {
-					outputDocument.toMicroAnnotation().writeToFile(outputFile.getAbsolutePath());
-				} else if (outputType == OutputType.JSON) {
-					if (!outputDocument.saveToJSONFile(outputFile.getAbsolutePath()))
-						return false;
+				for (String documentName : documents.getDocumentNames()) {				
+					dataTools.getOutputWriter().debugWriteln("Processing file " + documentName + "...");
+					
+					File outputFile = new File(outputDataDir, documentName);
+				
+					DocumentNLP inputDocument = documentSet.getDocumentByName(documentName, false);
+					DocumentNLP outputDocument = new DocumentNLPInMemory(dataTools, documentName, inputDocument.getOriginalText(), Language.English, pipeline);
+	
+					if (outputType == OutputType.MICRO) {
+						outputDocument.toMicroAnnotation().writeToFile(outputFile.getAbsolutePath());
+					} else if (outputType == OutputType.JSON) {
+						if (!outputDocument.saveToJSONFile(outputFile.getAbsolutePath()))
+							return false;
+					}
 				}
 				
 				return true;
 			}
 		});
 		
-		List<Boolean> results = threads.run(documentSet.getDocumentNames(), maxThreads);
+		List<Boolean> results = threads.run(documentSets, maxThreads);
 		for (Boolean result : results)
 			if (!result)
 				dataTools.getOutputWriter().debugWriteln("ERROR: Failed to run document through pipeline.");
@@ -132,8 +137,7 @@ public class RunPipelineNLPMicro {
 			return false;
 		}
 		
-		stanfordPipeline = new PipelineNLPStanford((Integer)options.valueOf("maxAnnotationSentenceLength"));
-		stanfordPipeline.initialize();
+		maxAnnotationSentenceLength = (Integer)options.valueOf("maxAnnotationSentenceLength");
 		
 		if (options.has("outputDebugFile")) {
 			dataTools.getOutputWriter().setDebugFile((File)options.valueOf("outputDebugFile"), false);
