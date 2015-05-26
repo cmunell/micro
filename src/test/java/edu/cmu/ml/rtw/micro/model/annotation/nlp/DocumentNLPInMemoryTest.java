@@ -11,7 +11,6 @@ import edu.cmu.ml.rtw.micro.data.MicroDataTools;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLP;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPInMemory;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.micro.DocumentAnnotation;
-import edu.cmu.ml.rtw.generic.util.OutputWriter;
 
 
 public class DocumentNLPInMemoryTest extends TestCase {
