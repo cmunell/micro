@@ -181,7 +181,7 @@ public class RunPipelineNLPMicro {
 		if ((Boolean)options.valueOf("disablePpa"))
 			disabledAnnotators.add(PipelineNLPMicro.Annotator.PPA_DISAMBIGUATOR);
 		
-		microPipeline = new PipelineNLPMicro((Double)options.valueOf("nounPhraseMentionModelThreshold"));
+		microPipeline = new PipelineNLPMicro((Double)options.valueOf("nounPhraseMentionModelThreshold"), disabledAnnotators);
 	
 		return true;
 	}

@@ -1,5 +1,6 @@
 package edu.cmu.ml.rtw.micro.model.annotation.nlp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLP;
@@ -35,6 +36,9 @@ public class PipelineNLPMicro extends PipelineNLP {
 	public PipelineNLPMicro(double nounPhraseMentionModelThreshold, List<Annotator> disabledAnnotators) {
 		super();
 
+		if (disabledAnnotators == null)
+			disabledAnnotators = new ArrayList<Annotator>();
+		
 		/*
 		 * Initialize and add micro-readers here
 		 */
