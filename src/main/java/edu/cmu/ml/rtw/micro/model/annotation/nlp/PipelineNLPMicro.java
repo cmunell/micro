@@ -8,7 +8,7 @@ import edu.cmu.ml.rtw.micro.hdp.HDPParser;
 import edu.cmu.ml.rtw.micro.cat.data.CatDataTools;
 import edu.cmu.ml.rtw.micro.cat.data.annotation.CategoryList;
 import edu.cmu.ml.rtw.micro.cat.data.annotation.nlp.NELLMentionCategorizer;
-import edu.cmu.ml.rtw.micro.sem.model.annotator.SemparseAnnotatorSentence;
+import edu.cmu.ml.rtw.micro.sem.model.annotation.nlp.SemparseAnnotatorSentence;
 import edu.cmu.ml.rtw.ppa.predict.PPADisambiguator;
 import edu.cmu.ml.rtw.AnnotationVerb;
 

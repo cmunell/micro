@@ -11,7 +11,7 @@ import edu.cmu.ml.rtw.generic.util.OutputWriter;
 import edu.cmu.ml.rtw.micro.cat.data.annotation.nlp.AnnotationTypeNLPCat;
 import edu.cmu.ml.rtw.micro.hdp.HDPParser;
 import edu.cmu.ml.rtw.ppa.predict.PPADisambiguator;
-import edu.cmu.ml.rtw.micro.sem.model.annotator.SemparseAnnotatorSentence;
+import edu.cmu.ml.rtw.micro.sem.model.annotation.nlp.SemparseAnnotatorSentence;
 
 public class MicroDataTools extends DataTools {
 
