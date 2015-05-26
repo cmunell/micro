@@ -15,6 +15,7 @@ import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLP;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLPStanford;
 import edu.cmu.ml.rtw.generic.util.OutputWriter;
 import edu.cmu.ml.rtw.generic.util.ThreadMapper;
+import edu.cmu.ml.rtw.micro.cat.data.annotation.nlp.NELLMentionCategorizer;
 import edu.cmu.ml.rtw.micro.data.MicroDataTools;
 import edu.cmu.ml.rtw.micro.model.annotation.nlp.PipelineNLPMicro;
 
@@ -104,6 +105,13 @@ public class RunPipelineNLPMicro {
 			.describedAs("Optional path to debug output file")
 			.ofType(File.class);
 		
+		parser.accepts("nounPhraseMentionModelThreshold").withRequiredArg()
+			.describedAs("The context dependent mention categorization models assign categories to a " +
+						 "noun-phrase when NELL's confidence about the noun-phrase's category is below this " +
+						 "threshold.")
+			.ofType(Double.class)
+			.defaultsTo(NELLMentionCategorizer.DEFAULT_MENTION_MODEL_THRESHOLD);
+		
 		parser.accepts("help").forHelp();
 		
 		OptionSet options = parser.parse(args);
@@ -144,7 +152,7 @@ public class RunPipelineNLPMicro {
 			dataTools.getOutputWriter().setDebugFile((File)options.valueOf("outputDebugFile"), false);
 		}
 		
-		microPipeline = new PipelineNLPMicro();
+		microPipeline = new PipelineNLPMicro((Double)options.valueOf("nounPhraseMentionModelThreshold"));
 	
 		return true;
 	}
