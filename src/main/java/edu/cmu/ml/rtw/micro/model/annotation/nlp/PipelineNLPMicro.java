@@ -1,5 +1,7 @@
 package edu.cmu.ml.rtw.micro.model.annotation.nlp;
 
+import java.util.List;
+
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLP;
 import edu.cmu.ml.rtw.micro.hdp.HDPParser;
 import edu.cmu.ml.rtw.micro.cat.data.CatDataTools;
@@ -10,33 +12,61 @@ import edu.cmu.ml.rtw.ppa.predict.PPADisambiguator;
 import edu.cmu.ml.rtw.AnnotationVerb;
 
 public class PipelineNLPMicro extends PipelineNLP {
+	public enum Annotator {
+		NP_CATEGORIZER,
+		VERB_ANNOTATOR,
+		SEMANTIC_PARSER,
+		HDP_PARSER,
+		PPA_DISAMBIGUATOR
+	}
+	
 	public PipelineNLPMicro() {
-		this(NELLMentionCategorizer.DEFAULT_MENTION_MODEL_THRESHOLD);
+		this(NELLMentionCategorizer.DEFAULT_MENTION_MODEL_THRESHOLD, null);
+	}
+	
+	public PipelineNLPMicro(List<Annotator> disabledAnnotators) {
+		this(NELLMentionCategorizer.DEFAULT_MENTION_MODEL_THRESHOLD, disabledAnnotators);
 	}
 	
 	public PipelineNLPMicro(double nounPhraseMentionModelThreshold) {
+		this(nounPhraseMentionModelThreshold, null);
+	}
+	
+	public PipelineNLPMicro(double nounPhraseMentionModelThreshold, List<Annotator> disabledAnnotators) {
 		super();
 
 		/*
-		 * Initialize micro-readers here
+		 * Initialize and add micro-readers here
 		 */
+		if (disabledAnnotators.contains(Annotator.NP_CATEGORIZER))
+			throw new IllegalArgumentException("Cannot disable noun-phrase categorizer.");
+		
 		NELLMentionCategorizer mentionCategorizer = new NELLMentionCategorizer(
 				new CategoryList(CategoryList.Type.ALL_NELL_CATEGORIES, new CatDataTools()), 
 				nounPhraseMentionModelThreshold, NELLMentionCategorizer.DEFAULT_LABEL_TYPE, 
 				1);
-		SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
-		AnnotationVerb annotationVerb = new AnnotationVerb();
-		PPADisambiguator ppa = new PPADisambiguator();
-		HDPParser hdpParser = HDPParser.getInstance();
-		
-		/*
-		 * Add micro-readers to the pipeline here
-		 */
 		addAnnotator(mentionCategorizer.produces(), mentionCategorizer);
-		addAnnotator(semanticParser.produces(), semanticParser);
-		addAnnotator(annotationVerb.produces(), annotationVerb);
-		addAnnotator(ppa.produces(), ppa);
-		addAnnotator(hdpParser.produces(), hdpParser);
+		
+		
+		if (!disabledAnnotators.contains(Annotator.SEMANTIC_PARSER)) {
+			SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
+			addAnnotator(semanticParser.produces(), semanticParser);		
+		}
+		
+		if (!disabledAnnotators.contains(Annotator.VERB_ANNOTATOR)) {
+			AnnotationVerb annotationVerb = new AnnotationVerb();
+			addAnnotator(annotationVerb.produces(), annotationVerb);
+		}
+		
+		if (!disabledAnnotators.contains(Annotator.PPA_DISAMBIGUATOR)) {
+			PPADisambiguator ppa = new PPADisambiguator();	
+			addAnnotator(ppa.produces(), ppa);
+		}
+		
+		if (!disabledAnnotators.contains(Annotator.HDP_PARSER)) {
+			HDPParser hdpParser = HDPParser.getInstance();
+			addAnnotator(hdpParser.produces(), hdpParser);
+		}
 	}
 	
 	public PipelineNLPMicro(PipelineNLPMicro pipeline) {

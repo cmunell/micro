@@ -2,6 +2,7 @@ package edu.cmu.ml.rtw.micro.scratch;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -112,6 +113,24 @@ public class RunPipelineNLPMicro {
 			.ofType(Double.class)
 			.defaultsTo(NELLMentionCategorizer.DEFAULT_MENTION_MODEL_THRESHOLD);
 		
+		parser.accepts("disableHdp").withRequiredArg()
+			.describedAs("Disable hdp parser")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
+		parser.accepts("disableVerb").withRequiredArg()
+			.describedAs("Disable verb annotator")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
+		parser.accepts("disableSem").withRequiredArg()
+			.describedAs("Disable semantic parser")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
+		parser.accepts("disablePpa").withRequiredArg()
+			.describedAs("Disable prepositional phrase attachment")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
+		
+		
 		parser.accepts("help").forHelp();
 		
 		OptionSet options = parser.parse(args);
@@ -151,6 +170,16 @@ public class RunPipelineNLPMicro {
 		if (options.has("outputDebugFile")) {
 			dataTools.getOutputWriter().setDebugFile((File)options.valueOf("outputDebugFile"), false);
 		}
+		
+		List<PipelineNLPMicro.Annotator> disabledAnnotators = new ArrayList<PipelineNLPMicro.Annotator>();
+		if ((Boolean)options.valueOf("disableHdp"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.HDP_PARSER);
+		if ((Boolean)options.valueOf("disableVerb"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.VERB_ANNOTATOR);
+		if ((Boolean)options.valueOf("disableSem"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.SEMANTIC_PARSER);
+		if ((Boolean)options.valueOf("disablePpa"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.PPA_DISAMBIGUATOR);
 		
 		microPipeline = new PipelineNLPMicro((Double)options.valueOf("nounPhraseMentionModelThreshold"));
 	
