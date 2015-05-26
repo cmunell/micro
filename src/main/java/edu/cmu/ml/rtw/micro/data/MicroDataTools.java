@@ -15,12 +15,12 @@ import edu.cmu.ml.rtw.ppa.predict.PPADisambiguator;
 
 public class MicroDataTools extends DataTools {
 
-  public MicroDataTools() {
-    this(new OutputWriter());
-  }
+    public MicroDataTools() {
+        this(new OutputWriter());
+    }
 
-  public MicroDataTools(OutputWriter outputWriter) {
-    super(outputWriter);
+    public MicroDataTools(OutputWriter outputWriter) {
+        super(outputWriter);
 
     /* Add micro-reading annotation types here */
     this.addAnnotationTypeNLP(AnnotationTypeNLPCat.NELL_CATEGORY);
