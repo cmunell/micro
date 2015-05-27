@@ -60,7 +60,7 @@ public class RunPipelineNLPMicro {
 					File outputFile = new File(outputDataDir, documentName);
 				
 					DocumentNLP inputDocument = documentSet.getDocumentByName(documentName, false);
-					DocumentNLP outputDocument = new DocumentNLPInMemory(dataTools, documentName, inputDocument.getOriginalText(), Language.English, pipeline);
+					DocumentNLP outputDocument = new DocumentNLPInMemory(dataTools, documentName, inputDocument.getOriginalText(), Language.English, pipeline, null, true);
 	
 					if (outputType == OutputType.MICRO) {
 						outputDocument.toMicroAnnotation().writeToFile(outputFile.getAbsolutePath());
