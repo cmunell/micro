@@ -24,7 +24,8 @@ import edu.cmu.ml.rtw.micro.model.annotation.nlp.PipelineNLPMicro;
 public class RunPipelineNLPMicro {
 	public enum OutputType {
 		MICRO,
-		JSON
+		JSON, 
+		HTML
 	}
 	
 	public static final int DEFAULT_MAX_ANNOTATION_SENTENCE_LENGTH = 30;
@@ -42,7 +43,7 @@ public class RunPipelineNLPMicro {
 		if (!parseArgs(args))
 			return;
 		
-		final DocumentSetNLP<DocumentNLPInMemory> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools));
+		final DocumentSetNLP<DocumentNLPInMemory> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools), true);
 		List<DocumentSetNLP<DocumentNLPInMemory>> documentSets = documentSet.makePartition(maxThreads, new Random(1), documentSet);
 		final PipelineNLPStanford stanfordPipeline = new PipelineNLPStanford(maxAnnotationSentenceLength);
 		stanfordPipeline.initialize();
@@ -65,6 +66,9 @@ public class RunPipelineNLPMicro {
 						outputDocument.toMicroAnnotation().writeToFile(outputFile.getAbsolutePath());
 					} else if (outputType == OutputType.JSON) {
 						if (!outputDocument.saveToJSONFile(outputFile.getAbsolutePath()))
+							return false;
+					} else if (outputType == OutputType.HTML) {
+						if (!outputDocument.saveToHtmlFile(outputFile.getAbsolutePath()))
 							return false;
 					}
 				}
