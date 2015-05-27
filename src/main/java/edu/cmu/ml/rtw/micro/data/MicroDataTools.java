@@ -40,6 +40,7 @@ public class MicroDataTools extends DataTools {
     annotationTypes.add(AnnotationVerb.NELL_VERB);
     annotationTypes.add(SemparseAnnotatorSentence.LOGICAL_FORM);
     annotationTypes.add(PPADisambiguator.PPA_DISAMBIG);
+    annotationTypes.add(HDPParser.SEMANTIC_PARSE);
     return annotationTypes;
   }
 }
