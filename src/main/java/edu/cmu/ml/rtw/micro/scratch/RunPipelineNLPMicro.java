@@ -25,7 +25,8 @@ public class RunPipelineNLPMicro {
 	public enum OutputType {
 		MICRO,
 		JSON, 
-		HTML
+		HTML,
+		HTML_NELL_ONLY
 	}
 	
 	public static final int DEFAULT_MAX_ANNOTATION_SENTENCE_LENGTH = 30;
@@ -70,6 +71,9 @@ public class RunPipelineNLPMicro {
 					} else if (outputType == OutputType.HTML) {
 						if (!outputDocument.saveToHtmlFile(outputFile.getAbsolutePath()))
 							return false;
+					} else if (outputType == OutputType.HTML_NELL_ONLY) {
+						if (!outputDocument.saveToHtmlFile(outputFile.getAbsolutePath(), dataTools.getNellAnnotationTypesNLP()))
+							return false;
 					}
 				}
 				
@@ -90,7 +94,7 @@ public class RunPipelineNLPMicro {
 		OptionParser parser = new OptionParser();
 		
 		parser.accepts("outputType").withRequiredArg()
-			.describedAs("JSON, or MICRO determines whether output data is stored as json object or micro-reading format")
+			.describedAs("JSON, MICRO, HTML, HTML_NELL_ONLY determines whether output data is stored as json object, micro-reading format, or html")
 			.defaultsTo("JSON");
 		parser.accepts("maxThreads").withRequiredArg()
 			.describedAs("Maximum number of concurrent threads to use when annotating files")
