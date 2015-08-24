@@ -123,6 +123,11 @@
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
+			<artifactId>micro-nom</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-sem</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>		
