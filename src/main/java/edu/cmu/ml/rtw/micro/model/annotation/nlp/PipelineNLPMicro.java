@@ -42,15 +42,16 @@ public class PipelineNLPMicro extends PipelineNLP {
 		/*
 		 * Initialize and add micro-readers here
 		 */
-		if (disabledAnnotators.contains(Annotator.NP_CATEGORIZER))
+		if (disabledAnnotators.contains(Annotator.NP_CATEGORIZER) && false)  //bkdb
 			throw new IllegalArgumentException("Cannot disable noun-phrase categorizer.");
-		
-		NELLMentionCategorizer mentionCategorizer = new NELLMentionCategorizer(
-				new CategoryList(CategoryList.Type.ALL_NELL_CATEGORIES, new CatDataTools()), 
-				nounPhraseMentionModelThreshold, NELLMentionCategorizer.DEFAULT_LABEL_TYPE, 
-				1);
-		addAnnotator(mentionCategorizer.produces(), mentionCategorizer);
-		
+
+                if (!disabledAnnotators.contains(Annotator.NP_CATEGORIZER)) {
+                    NELLMentionCategorizer mentionCategorizer = new NELLMentionCategorizer(
+                            new CategoryList(CategoryList.Type.ALL_NELL_CATEGORIES, new CatDataTools()), 
+                            nounPhraseMentionModelThreshold, NELLMentionCategorizer.DEFAULT_LABEL_TYPE, 
+                            20);
+                    addAnnotator(mentionCategorizer.produces(), mentionCategorizer);
+                }
 		
 		if (!disabledAnnotators.contains(Annotator.SEMANTIC_PARSER)) {
 			SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
