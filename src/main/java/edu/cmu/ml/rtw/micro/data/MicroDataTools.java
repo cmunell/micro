@@ -43,4 +43,9 @@ public class MicroDataTools extends DataTools {
     annotationTypes.add(HDPParser.SEMANTIC_PARSE);
     return annotationTypes;
   }
+  
+  @Override
+  public DataTools makeInstance() {
+	  return new MicroDataTools(this.outputWriter);
+  }
 }
