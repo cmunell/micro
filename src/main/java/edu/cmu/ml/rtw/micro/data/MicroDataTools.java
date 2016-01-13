@@ -12,6 +12,8 @@ import edu.cmu.ml.rtw.micro.cat.data.annotation.nlp.AnnotationTypeNLPCat;
 import edu.cmu.ml.rtw.micro.hdp.HDPParser;
 import edu.cmu.ml.rtw.ppa.predict.PPADisambiguator;
 import edu.cmu.ml.rtw.micro.sem.model.annotation.nlp.SemparseAnnotatorSentence;
+import edu.cmu.ml.rtw.nominals.NominalsReader;
+import edu.cmu.ml.rtw.users.ssrivastava.RegexExtractor;
 
 public class MicroDataTools extends DataTools {
 
@@ -28,6 +30,8 @@ public class MicroDataTools extends DataTools {
     this.addAnnotationTypeNLP(SemparseAnnotatorSentence.LOGICAL_FORM);
     this.addAnnotationTypeNLP(PPADisambiguator.PPA_DISAMBIG);
     this.addAnnotationTypeNLP(HDPParser.SEMANTIC_PARSE);
+    this.addAnnotationTypeNLP(NominalsReader.NOMINALRELATIONS);
+    this.addAnnotationTypeNLP(RegexExtractor.REGEX_EXTRACTION);
   }
 
   /**
@@ -41,6 +45,8 @@ public class MicroDataTools extends DataTools {
     annotationTypes.add(SemparseAnnotatorSentence.LOGICAL_FORM);
     annotationTypes.add(PPADisambiguator.PPA_DISAMBIG);
     annotationTypes.add(HDPParser.SEMANTIC_PARSE);
+    annotationTypes.add(NominalsReader.NOMINALRELATIONS);
+    annotationTypes.add(RegexExtractor.REGEX_EXTRACTION);
     return annotationTypes;
   }
   

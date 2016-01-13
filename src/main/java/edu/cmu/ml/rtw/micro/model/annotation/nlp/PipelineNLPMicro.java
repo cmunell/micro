@@ -9,7 +9,9 @@ import edu.cmu.ml.rtw.micro.cat.data.CatDataTools;
 import edu.cmu.ml.rtw.micro.cat.data.annotation.CategoryList;
 import edu.cmu.ml.rtw.micro.cat.data.annotation.nlp.NELLMentionCategorizer;
 import edu.cmu.ml.rtw.micro.sem.model.annotation.nlp.SemparseAnnotatorSentence;
+import edu.cmu.ml.rtw.nominals.NominalsReader;
 import edu.cmu.ml.rtw.ppa.predict.PPADisambiguator;
+import edu.cmu.ml.rtw.users.ssrivastava.RegexExtractor;
 import edu.cmu.ml.rtw.AnnotationVerb;
 
 public class PipelineNLPMicro extends PipelineNLP {
@@ -18,7 +20,9 @@ public class PipelineNLPMicro extends PipelineNLP {
 		VERB_ANNOTATOR,
 		SEMANTIC_PARSER,
 		HDP_PARSER,
-		PPA_DISAMBIGUATOR
+		PPA_DISAMBIGUATOR,
+		NOMINALRELATIONS,
+		REGEX_EXTRACTOR
 	}
 	
 	public PipelineNLPMicro() {
@@ -71,6 +75,17 @@ public class PipelineNLPMicro extends PipelineNLP {
 			HDPParser hdpParser = HDPParser.getInstance();
 			addAnnotator(hdpParser.produces(), hdpParser);
 		}
+
+    if (!disabledAnnotators.contains(Annotator.NOMINALRELATIONS)) {
+      NominalsReader nominalsRelationExtractor = new NominalsReader();
+      addAnnotator(nominalsRelationExtractor.produces(), nominalsRelationExtractor);
+    }
+
+		if (!disabledAnnotators.contains(Annotator.REGEX_EXTRACTOR)) {
+			RegexExtractor regex = new RegexExtractor();
+			addAnnotator(regex.produces(), regex);
+		}
+
 	}
 	
 	public PipelineNLPMicro(PipelineNLPMicro pipeline) {
