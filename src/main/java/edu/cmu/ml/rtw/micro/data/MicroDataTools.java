@@ -49,4 +49,9 @@ public class MicroDataTools extends DataTools {
     annotationTypes.add(RegexExtractor.REGEX_EXTRACTION);
     return annotationTypes;
   }
+  
+  @Override
+  public DataTools makeInstance() {
+	  return new MicroDataTools(this.outputWriter);
+  }
 }
