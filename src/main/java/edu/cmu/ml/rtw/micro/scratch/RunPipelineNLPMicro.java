@@ -137,7 +137,14 @@ public class RunPipelineNLPMicro {
 			.describedAs("Disable prepositional phrase attachment")
 			.ofType(Boolean.class)
 			.defaultsTo(false);
-		
+		parser.accepts("disableNominal").withRequiredArg()
+			.describedAs("Disable nominals")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
+		parser.accepts("disableRegex").withRequiredArg()
+			.describedAs("Disable regex")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
 		
 		parser.accepts("help").forHelp();
 		
@@ -188,6 +195,10 @@ public class RunPipelineNLPMicro {
 			disabledAnnotators.add(PipelineNLPMicro.Annotator.SEMANTIC_PARSER);
 		if ((Boolean)options.valueOf("disablePpa"))
 			disabledAnnotators.add(PipelineNLPMicro.Annotator.PPA_DISAMBIGUATOR);
+		if ((Boolean)options.valueOf("disableNominal"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.NOMINALRELATIONS);
+		if ((Boolean)options.valueOf("disableRegex"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.REGEX_EXTRACTOR);
 		
 		microPipeline = new PipelineNLPMicro((Double)options.valueOf("nounPhraseMentionModelThreshold"), disabledAnnotators);
 	
