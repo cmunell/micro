@@ -15,6 +15,8 @@ import edu.cmu.ml.rtw.generic.data.annotation.nlp.micro.DocumentAnnotation;
 
 public class DocumentNLPInMemoryTest extends TestCase {
 
+    /* TODO: revive this to work with post-Jan-2016 codebase
+
   // This was what I used when developing a little demo.  It's not really a test at this point...
   public void testHtmlOutput() throws IOException {
     MicroDataTools dataTools = new MicroDataTools();
@@ -39,4 +41,5 @@ public class DocumentNLPInMemoryTest extends TestCase {
     writer.write(htmlString);
     writer.close();
   }
+    */
 }

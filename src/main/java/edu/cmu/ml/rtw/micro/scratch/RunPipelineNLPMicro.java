@@ -10,10 +10,14 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLP;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPInMemory;
-import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentSetNLP;
+import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPMutable;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.Language;
+import edu.cmu.ml.rtw.generic.data.annotation.nlp.SerializerDocumentNLPHTML;
+import edu.cmu.ml.rtw.generic.data.annotation.nlp.SerializerDocumentNLPJSONLegacy;
+import edu.cmu.ml.rtw.generic.data.annotation.nlp.SerializerDocumentNLPMicro;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLP;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLPStanford;
+import edu.cmu.ml.rtw.generic.util.FileUtil;
 import edu.cmu.ml.rtw.generic.util.OutputWriter;
 import edu.cmu.ml.rtw.generic.util.ThreadMapper;
 import edu.cmu.ml.rtw.micro.cat.data.annotation.nlp.NELLMentionCategorizer;
@@ -43,45 +47,40 @@ public class RunPipelineNLPMicro {
 	public static void main(String[] args) {		
 		if (!parseArgs(args))
 			return;
-		
-		final DocumentSetNLP<DocumentNLPInMemory> documentSet = DocumentSetNLP.loadFromTextPathThroughPipeline("", Language.English, inputDataPath.getAbsolutePath(), new DocumentNLPInMemory(dataTools), true);
-		List<DocumentSetNLP<DocumentNLPInMemory>> documentSets = documentSet.makePartition(maxThreads, new Random(1), documentSet);
+
 		final PipelineNLPStanford stanfordPipeline = new PipelineNLPStanford(maxAnnotationSentenceLength);
 		stanfordPipeline.initialize();
-		
-		ThreadMapper<DocumentSetNLP<DocumentNLPInMemory>, Boolean> threads = new ThreadMapper<DocumentSetNLP<DocumentNLPInMemory>, Boolean>(new ThreadMapper.Fn<DocumentSetNLP<DocumentNLPInMemory>, Boolean>() {
-			public Boolean apply(DocumentSetNLP<DocumentNLPInMemory> documents) {
+		List<File> files = new ArrayList<File>();
+                for (File f : inputDataPath.listFiles()) files.add(f);
+
+		ThreadMapper<File, Boolean> threads = new ThreadMapper<File, Boolean>(new ThreadMapper.Fn<File, Boolean>() {
+			public Boolean apply(File inFile) {
 				PipelineNLPStanford threadStanfordPipeline= new PipelineNLPStanford(stanfordPipeline);
 				PipelineNLPMicro threadMicroPipeline = new PipelineNLPMicro(microPipeline);
 				PipelineNLP pipeline = threadStanfordPipeline.weld(threadMicroPipeline);
+
+                                DocumentNLPMutable document = new DocumentNLPInMemory(dataTools, inFile.getName(), FileUtil.readFile(inFile));
+                                pipeline.run(document);
+                                File outFile = new File(outputDataDir, inFile.getName());
 				
-				for (String documentName : documents.getDocumentNames()) {				
-					dataTools.getOutputWriter().debugWriteln("Processing file " + documentName + "...");
-					
-					File outputFile = new File(outputDataDir, documentName);
-				
-					DocumentNLP inputDocument = documentSet.getDocumentByName(documentName, false);
-					DocumentNLP outputDocument = new DocumentNLPInMemory(dataTools, documentName, inputDocument.getOriginalText(), Language.English, pipeline, null, true);
-	
-					if (outputType == OutputType.MICRO) {
-						outputDocument.toMicroAnnotation().writeToFile(outputFile.getAbsolutePath());
-					} else if (outputType == OutputType.JSON) {
-						if (!outputDocument.saveToJSONFile(outputFile.getAbsolutePath()))
-							return false;
-					} else if (outputType == OutputType.HTML) {
-						if (!outputDocument.saveToHtmlFile(outputFile.getAbsolutePath()))
-							return false;
-					} else if (outputType == OutputType.HTML_NELL_ONLY) {
-						if (!outputDocument.saveToHtmlFile(outputFile.getAbsolutePath(), dataTools.getNellAnnotationTypesNLP()))
-							return false;
-					}
+                                if (outputType == OutputType.MICRO) {
+                                        SerializerDocumentNLPMicro microSerial = new SerializerDocumentNLPMicro(dataTools);
+                                        FileUtil.writeFile(outFile, microSerial.serializeToString(document));
+                                } else if (outputType == OutputType.JSON) {
+                                        SerializerDocumentNLPJSONLegacy jsonSerial = new SerializerDocumentNLPJSONLegacy(dataTools);
+                                        FileUtil.writeFile(outFile, jsonSerial.serializeToString(document));
+                                } else if (outputType == OutputType.HTML) {
+                                        SerializerDocumentNLPHTML htmlSerial = new SerializerDocumentNLPHTML(dataTools);
+                                        FileUtil.writeFile(outFile, htmlSerial.serializeToString(document));
+                                } else if (outputType == OutputType.HTML_NELL_ONLY) {
+                                        throw new RuntimeException("TODO: NELL-Only mode");
 				}
 				
 				return true;
 			}
 		});
-		
-		List<Boolean> results = threads.run(documentSets, maxThreads);
+
+		List<Boolean> results = threads.run(files, maxThreads);
 		for (Boolean result : results)
 			if (!result)
 				dataTools.getOutputWriter().debugWriteln("ERROR: Failed to run document through pipeline.");
@@ -145,6 +144,14 @@ public class RunPipelineNLPMicro {
 			.describedAs("Disable regex")
 			.ofType(Boolean.class)
 			.defaultsTo(false);
+		parser.accepts("disableEvent").withRequiredArg()
+			.describedAs("Disable event extractor")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
+		parser.accepts("disableOpinion").withRequiredArg()
+			.describedAs("Disable opinion extractor")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
 		
 		parser.accepts("help").forHelp();
 		
@@ -199,6 +206,10 @@ public class RunPipelineNLPMicro {
 			disabledAnnotators.add(PipelineNLPMicro.Annotator.NOMINALRELATIONS);
 		if ((Boolean)options.valueOf("disableRegex"))
 			disabledAnnotators.add(PipelineNLPMicro.Annotator.REGEX_EXTRACTOR);
+		if ((Boolean)options.valueOf("disableEvent"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.EVENT_EXTRACTOR);
+		if ((Boolean)options.valueOf("disableOpinion"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.OPINION_EXTRACTOR);
 		
 		microPipeline = new PipelineNLPMicro((Double)options.valueOf("nounPhraseMentionModelThreshold"), disabledAnnotators);
 	

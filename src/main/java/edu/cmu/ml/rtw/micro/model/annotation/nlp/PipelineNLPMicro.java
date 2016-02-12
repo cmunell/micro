@@ -13,6 +13,8 @@ import edu.cmu.ml.rtw.nominals.NominalsReader;
 import edu.cmu.ml.rtw.ppa.predict.PPADisambiguator;
 import edu.cmu.ml.rtw.users.ssrivastava.RegexExtractor;
 import edu.cmu.ml.rtw.AnnotationVerb;
+import edu.cmu.ml.rtw.micro.event.EventExtractor;
+import edu.cmu.ml.rtw.micro.opinion.OpinionExtractor;
 
 public class PipelineNLPMicro extends PipelineNLP {
 	public enum Annotator {
@@ -22,7 +24,9 @@ public class PipelineNLPMicro extends PipelineNLP {
 		HDP_PARSER,
 		PPA_DISAMBIGUATOR,
 		NOMINALRELATIONS,
-		REGEX_EXTRACTOR
+                REGEX_EXTRACTOR,
+                EVENT_EXTRACTOR,
+                OPINION_EXTRACTOR
 	}
 	
 	public PipelineNLPMicro() {
@@ -87,11 +91,19 @@ public class PipelineNLPMicro extends PipelineNLP {
 			addAnnotator(regex.produces(), regex);
 		}
 
+		if (!disabledAnnotators.contains(Annotator.EVENT_EXTRACTOR)) {
+			EventExtractor event = EventExtractor.getInstance();
+			addAnnotator(event.produces(), event);
+		}
+
+		if (!disabledAnnotators.contains(Annotator.OPINION_EXTRACTOR)) {
+                    OpinionExtractor opinion = OpinionExtractor.getInstance();
+			addAnnotator(opinion.produces(), opinion);
+		}
 	}
 	
 	public PipelineNLPMicro(PipelineNLPMicro pipeline) {
 		this.annotationOrder = pipeline.annotationOrder;
 		this.annotators = pipeline.annotators;
-		this.document = pipeline.document;
 	}
 }

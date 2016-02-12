@@ -6,7 +6,7 @@
 	<packaging>nar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
-		<library_path>${project.build.directory}/nar/micro-hdp-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}</library_path>
+		<library_path>${project.build.directory}/nar/micro-hdp-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}:${project.build.directory}/nar/micro-event-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}:${project.build.directory}/nar/micro-opinion-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}</library_path>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
@@ -139,6 +139,18 @@
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-hdp</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>edu.cmu.ml.rtw</groupId>
+			<artifactId>micro-event</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>edu.cmu.ml.rtw</groupId>
+			<artifactId>micro-opinion</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<type>nar</type>
 		</dependency>
