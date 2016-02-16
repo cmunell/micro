@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import edu.cmu.ml.rtw.AnnotationVerb;
+import edu.cmu.ml.rtw.contextless.ContextlessNPCategorizer;
 import edu.cmu.ml.rtw.generic.data.DataTools;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.AnnotationTypeNLP;
 import edu.cmu.ml.rtw.generic.util.OutputWriter;
@@ -32,6 +33,7 @@ public class MicroDataTools extends DataTools {
     this.addAnnotationTypeNLP(HDPParser.SEMANTIC_PARSE);
     this.addAnnotationTypeNLP(NominalsReader.NOMINALRELATIONS);
     this.addAnnotationTypeNLP(RegexExtractor.REGEX_EXTRACTION);
+    this.addAnnotationTypeNLP(ContextlessNPCategorizer.OUTOFCONTEXT_NP_CATEGORIES);
   }
 
   /**
@@ -47,6 +49,7 @@ public class MicroDataTools extends DataTools {
     annotationTypes.add(HDPParser.SEMANTIC_PARSE);
     annotationTypes.add(NominalsReader.NOMINALRELATIONS);
     annotationTypes.add(RegexExtractor.REGEX_EXTRACTION);
+    annotationTypes.add(ContextlessNPCategorizer.OUTOFCONTEXT_NP_CATEGORIES);
     return annotationTypes;
   }
   

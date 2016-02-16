@@ -3,6 +3,7 @@ package edu.cmu.ml.rtw.micro.model.annotation.nlp;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.cmu.ml.rtw.contextless.ContextlessNPCategorizer;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLP;
 import edu.cmu.ml.rtw.micro.hdp.HDPParser;
 import edu.cmu.ml.rtw.micro.cat.data.CatDataTools;
@@ -26,7 +27,8 @@ public class PipelineNLPMicro extends PipelineNLP {
 		NOMINALRELATIONS,
                 REGEX_EXTRACTOR,
                 EVENT_EXTRACTOR,
-                OPINION_EXTRACTOR
+                OPINION_EXTRACTOR,
+                CONTEXTLESSNP_NP_CATEGORIZER
 	}
 	
 	public PipelineNLPMicro() {
@@ -100,6 +102,10 @@ public class PipelineNLPMicro extends PipelineNLP {
                     OpinionExtractor opinion = OpinionExtractor.getInstance();
 			addAnnotator(opinion.produces(), opinion);
 		}
+	   if (!disabledAnnotators.contains(Annotator.CONTEXTLESSNP_NP_CATEGORIZER)) {
+	      ContextlessNPCategorizer contextlessNPCategorizer = new ContextlessNPCategorizer();
+	      addAnnotator(contextlessNPCategorizer.produces(), contextlessNPCategorizer);
+	    }
 	}
 	
 	public PipelineNLPMicro(PipelineNLPMicro pipeline) {
