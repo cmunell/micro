@@ -12,8 +12,8 @@ import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLP;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPInMemory;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.DocumentNLPMutable;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.Language;
+import edu.cmu.ml.rtw.generic.data.annotation.nlp.SerializerDocumentNLPBSON;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.SerializerDocumentNLPHTML;
-import edu.cmu.ml.rtw.generic.data.annotation.nlp.SerializerDocumentNLPJSONLegacy;
 import edu.cmu.ml.rtw.generic.data.annotation.nlp.SerializerDocumentNLPMicro;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLP;
 import edu.cmu.ml.rtw.generic.model.annotator.nlp.PipelineNLPStanford;
@@ -28,7 +28,7 @@ import edu.cmu.ml.rtw.micro.model.annotation.nlp.PipelineNLPMicro;
 public class RunPipelineNLPMicro {
 	public enum OutputType {
 		MICRO,
-		JSON, 
+		BSON, 
 		HTML,
 		HTML_NELL_ONLY
 	}
@@ -66,9 +66,9 @@ public class RunPipelineNLPMicro {
                                 if (outputType == OutputType.MICRO) {
                                         SerializerDocumentNLPMicro microSerial = new SerializerDocumentNLPMicro(dataTools);
                                         FileUtil.writeFile(outFile, microSerial.serializeToString(document));
-                                } else if (outputType == OutputType.JSON) {
-                                        SerializerDocumentNLPJSONLegacy jsonSerial = new SerializerDocumentNLPJSONLegacy(dataTools);
-                                        FileUtil.writeFile(outFile, jsonSerial.serializeToString(document));
+                                } else if (outputType == OutputType.BSON) {
+                                        SerializerDocumentNLPBSON bsonSerial = new SerializerDocumentNLPBSON(dataTools);
+                                        FileUtil.writeFile(outFile, bsonSerial.serializeToString(document));
                                 } else if (outputType == OutputType.HTML) {
                                         SerializerDocumentNLPHTML htmlSerial = new SerializerDocumentNLPHTML(dataTools);
                                         FileUtil.writeFile(outFile, htmlSerial.serializeToString(document));
@@ -93,8 +93,8 @@ public class RunPipelineNLPMicro {
 		OptionParser parser = new OptionParser();
 		
 		parser.accepts("outputType").withRequiredArg()
-			.describedAs("JSON, MICRO, HTML, HTML_NELL_ONLY determines whether output data is stored as json object, micro-reading format, or html")
-			.defaultsTo("JSON");
+			.describedAs("BSON, MICRO, HTML, HTML_NELL_ONLY determines whether output data is stored as bson object, micro-reading json format, or html")
+			.defaultsTo("BSON");
 		parser.accepts("maxThreads").withRequiredArg()
 			.describedAs("Maximum number of concurrent threads to use when annotating files")
 			.ofType(Integer.class)
