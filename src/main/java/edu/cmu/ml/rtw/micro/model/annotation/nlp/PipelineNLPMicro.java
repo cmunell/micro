@@ -28,7 +28,7 @@ public class PipelineNLPMicro extends PipelineNLP {
                 REGEX_EXTRACTOR,
                 EVENT_EXTRACTOR,
                 OPINION_EXTRACTOR,
-                CONTEXTLESSNP_NP_CATEGORIZER
+                CONTEXTLESS_NP_CATEGORIZER
 	}
 	
 	public PipelineNLPMicro() {
@@ -102,7 +102,7 @@ public class PipelineNLPMicro extends PipelineNLP {
                     OpinionExtractor opinion = OpinionExtractor.getInstance();
 			addAnnotator(opinion.produces(), opinion);
 		}
-	   if (!disabledAnnotators.contains(Annotator.CONTEXTLESSNP_NP_CATEGORIZER)) {
+	   if (!disabledAnnotators.contains(Annotator.CONTEXTLESS_NP_CATEGORIZER)) {
 	      ContextlessNPCategorizer contextlessNPCategorizer = new ContextlessNPCategorizer();
 	      addAnnotator(contextlessNPCategorizer.produces(), contextlessNPCategorizer);
 	    }
