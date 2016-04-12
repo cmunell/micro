@@ -63,6 +63,11 @@ public class PipelineNLPMicro extends PipelineNLP {
                     addAnnotator(mentionCategorizer.produces(), mentionCategorizer);
                 }
 		
+	   if (!disabledAnnotators.contains(Annotator.CONTEXTLESS_NP_CATEGORIZER)) {
+	      ContextlessNPCategorizer contextlessNPCategorizer = new ContextlessNPCategorizer();
+	      addAnnotator(contextlessNPCategorizer.produces(), contextlessNPCategorizer);
+	    }
+
 		if (!disabledAnnotators.contains(Annotator.SEMANTIC_PARSER)) {
 			SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
 			addAnnotator(semanticParser.produces(), semanticParser);		
@@ -102,10 +107,6 @@ public class PipelineNLPMicro extends PipelineNLP {
                     OpinionExtractor opinion = OpinionExtractor.getInstance();
 			addAnnotator(opinion.produces(), opinion);
 		}
-	   if (!disabledAnnotators.contains(Annotator.CONTEXTLESS_NP_CATEGORIZER)) {
-	      ContextlessNPCategorizer contextlessNPCategorizer = new ContextlessNPCategorizer();
-	      addAnnotator(contextlessNPCategorizer.produces(), contextlessNPCategorizer);
-	    }
 	}
 	
 	public PipelineNLPMicro(PipelineNLPMicro pipeline) {

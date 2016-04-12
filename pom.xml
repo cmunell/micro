@@ -55,7 +55,7 @@
 					<environmentVariables>
 						<LD_LIBRARY_PATH>${library_path}</LD_LIBRARY_PATH>
 					</environmentVariables>
-					<argLine>-Djava.library.path=${library_path}</argLine>
+					<argLine>-Djava.library.path=${library_path} -Xmx30G</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -117,6 +117,17 @@
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-cat</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+<!-- Block this from hadoop since a conflicting version comes in through org.deeplearning4j via micro-util -->
+<exclusions>
+  <exclusion> 
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-log4j12</artifactId>
+  </exclusion>
+  <exclusion> 
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+  </exclusion>
+</exclusions> 
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
@@ -147,6 +158,17 @@
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-sem</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+<!-- Block this from hadoop since a conflicting version comes in through org.deeplearning4j via micro-util -->
+<exclusions>
+  <exclusion> 
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-log4j12</artifactId>
+  </exclusion>
+  <exclusion> 
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+  </exclusion>
+</exclusions> 
 		</dependency>		
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>

@@ -55,6 +55,8 @@ public class RunPipelineNLPMicro {
 
 		ThreadMapper<File, Boolean> threads = new ThreadMapper<File, Boolean>(new ThreadMapper.Fn<File, Boolean>() {
 			public Boolean apply(File inFile) {
+                            try {
+                                dataTools.getOutputWriter().debugWriteln("Processing " + inFile + "...");
 				PipelineNLPStanford threadStanfordPipeline= new PipelineNLPStanford(stanfordPipeline);
 				PipelineNLPMicro threadMicroPipeline = new PipelineNLPMicro(microPipeline);
 				PipelineNLP pipeline = threadStanfordPipeline.weld(threadMicroPipeline);
@@ -64,19 +66,22 @@ public class RunPipelineNLPMicro {
                                 File outFile = new File(outputDataDir, inFile.getName());
 				
                                 if (outputType == OutputType.MICRO) {
-                                        SerializerDocumentNLPMicro microSerial = new SerializerDocumentNLPMicro(dataTools);
-                                        FileUtil.writeFile(outFile, microSerial.serializeToString(document));
+                                    SerializerDocumentNLPMicro microSerial = new SerializerDocumentNLPMicro(dataTools);
+                                    FileUtil.writeFile(outFile, microSerial.serializeToString(document));
                                 } else if (outputType == OutputType.BSON) {
-                                        SerializerDocumentNLPBSON bsonSerial = new SerializerDocumentNLPBSON(dataTools);
-                                        FileUtil.writeFile(outFile, bsonSerial.serializeToString(document));
+                                    SerializerDocumentNLPBSON bsonSerial = new SerializerDocumentNLPBSON(dataTools);
+                                    FileUtil.writeFile(outFile, bsonSerial.serializeToString(document));
                                 } else if (outputType == OutputType.HTML) {
-                                        SerializerDocumentNLPHTML htmlSerial = new SerializerDocumentNLPHTML(dataTools);
-                                        FileUtil.writeFile(outFile, htmlSerial.serializeToString(document));
+                                    SerializerDocumentNLPHTML htmlSerial = new SerializerDocumentNLPHTML(dataTools);
+                                    FileUtil.writeFile(outFile, htmlSerial.serializeToString(document));
                                 } else if (outputType == OutputType.HTML_NELL_ONLY) {
-                                        throw new RuntimeException("TODO: NELL-Only mode");
+                                    throw new RuntimeException("TODO: NELL-Only mode");
 				}
 				
 				return true;
+                            } catch (Exception e) {
+                                throw new RuntimeException("apply(" + inFile + ")", e);
+                            }
 			}
 		});
 
