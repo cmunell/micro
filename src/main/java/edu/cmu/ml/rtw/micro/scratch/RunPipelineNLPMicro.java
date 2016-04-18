@@ -48,18 +48,24 @@ public class RunPipelineNLPMicro {
 		if (!parseArgs(args))
 			return;
 
-		final PipelineNLPStanford stanfordPipeline = new PipelineNLPStanford(maxAnnotationSentenceLength);
-		stanfordPipeline.initialize();
 		List<File> files = new ArrayList<File>();
                 for (File f : inputDataPath.listFiles()) files.add(f);
 
-		ThreadMapper<File, Boolean> threads = new ThreadMapper<File, Boolean>(new ThreadMapper.Fn<File, Boolean>() {
-			public Boolean apply(File inFile) {
+                ThreadMapper<File, Boolean> threads = new ThreadMapper<File, Boolean>(new ThreadMapper.Fn<File, Boolean>() {
+                        ThreadLocal<PipelineNLPStanford> stanfordPipeline = null;
+
+                        public Boolean apply(File inFile) {
                             try {
                                 dataTools.getOutputWriter().debugWriteln("Processing " + inFile + "...");
-				PipelineNLPStanford threadStanfordPipeline= new PipelineNLPStanford(stanfordPipeline);
+                                stanfordPipeline = new ThreadLocal() {
+                                        protected synchronized Object initialValue() {
+                                            PipelineNLPStanford p = new PipelineNLPStanford(maxAnnotationSentenceLength);
+                                            p.initialize();
+                                            return p;
+                                        }
+                                    };
 				PipelineNLPMicro threadMicroPipeline = new PipelineNLPMicro(microPipeline);
-				PipelineNLP pipeline = threadStanfordPipeline.weld(threadMicroPipeline);
+				PipelineNLP pipeline = stanfordPipeline.get().weld(threadMicroPipeline);
 
                                 DocumentNLPMutable document = new DocumentNLPInMemory(dataTools, inFile.getName(), FileUtil.readFile(inFile));
                                 pipeline.run(document);
