@@ -52,7 +52,7 @@ public class RunPipelineNLPMicro {
                 for (File f : inputDataPath.listFiles()) files.add(f);
 
                 ThreadMapper<File, Boolean> threads = new ThreadMapper<File, Boolean>(new ThreadMapper.Fn<File, Boolean>() {
-                        ThreadLocal<PipelineNLPStanford> stanfordPipeline = null;
+                        ThreadLocal<PipelineNLPStanford> stanfordPipeline = null;  // TODO: Make PipelienNLPStanford thread-safe
 
                         public Boolean apply(File inFile) {
                             try {
@@ -131,6 +131,10 @@ public class RunPipelineNLPMicro {
 			.ofType(Double.class)
 			.defaultsTo(NELLMentionCategorizer.DEFAULT_MENTION_MODEL_THRESHOLD);
 		
+		parser.accepts("disableCat").withRequiredArg()
+			.describedAs("Disable micro-cat")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
 		parser.accepts("disableHdp").withRequiredArg()
 			.describedAs("Disable hdp parser")
 			.ofType(Boolean.class)
@@ -161,6 +165,10 @@ public class RunPipelineNLPMicro {
 			.defaultsTo(false);
 		parser.accepts("disableOpinion").withRequiredArg()
 			.describedAs("Disable opinion extractor")
+			.ofType(Boolean.class)
+			.defaultsTo(false);
+		parser.accepts("disableOOCCat").withRequiredArg()
+			.describedAs("Disable micro-ooccat")
 			.ofType(Boolean.class)
 			.defaultsTo(false);
 		
@@ -205,6 +213,8 @@ public class RunPipelineNLPMicro {
 		}
 		
 		List<PipelineNLPMicro.Annotator> disabledAnnotators = new ArrayList<PipelineNLPMicro.Annotator>();
+		if ((Boolean)options.valueOf("disableCat"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.NP_CATEGORIZER);
 		if ((Boolean)options.valueOf("disableHdp"))
 			disabledAnnotators.add(PipelineNLPMicro.Annotator.HDP_PARSER);
 		if ((Boolean)options.valueOf("disableVerb"))
@@ -221,6 +231,8 @@ public class RunPipelineNLPMicro {
 			disabledAnnotators.add(PipelineNLPMicro.Annotator.EVENT_EXTRACTOR);
 		if ((Boolean)options.valueOf("disableOpinion"))
 			disabledAnnotators.add(PipelineNLPMicro.Annotator.OPINION_EXTRACTOR);
+		if ((Boolean)options.valueOf("disableOOCCat"))
+			disabledAnnotators.add(PipelineNLPMicro.Annotator.CONTEXTLESS_NP_CATEGORIZER);
 		
 		microPipeline = new PipelineNLPMicro((Double)options.valueOf("nounPhraseMentionModelThreshold"), disabledAnnotators);
 	
