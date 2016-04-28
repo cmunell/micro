@@ -43,71 +43,81 @@ public class PipelineNLPMicro extends PipelineNLP {
 		this(nounPhraseMentionModelThreshold, null);
 	}
 	
-	public PipelineNLPMicro(double nounPhraseMentionModelThreshold, List<Annotator> disabledAnnotators) {
-		super();
+    public PipelineNLPMicro(double nounPhraseMentionModelThreshold, List<Annotator> disabledAnnotators) {
+        super();
 
-		if (disabledAnnotators == null)
-			disabledAnnotators = new ArrayList<Annotator>();
+        if (disabledAnnotators == null)
+            disabledAnnotators = new ArrayList<Annotator>();
 		
-		/*
-		 * Initialize and add micro-readers here
-		 */
-		if (disabledAnnotators.contains(Annotator.NP_CATEGORIZER) && false)  //bkdb
-			throw new IllegalArgumentException("Cannot disable noun-phrase categorizer.");
+        /*
+         * Initialize and add micro-readers here
+         */
+        if (disabledAnnotators.contains(Annotator.NP_CATEGORIZER) && false)  //bkdb
+            throw new IllegalArgumentException("Cannot disable noun-phrase categorizer.");
 
-                if (!disabledAnnotators.contains(Annotator.NP_CATEGORIZER)) {
-                    NELLMentionCategorizer mentionCategorizer = new NELLMentionCategorizer(
-                            new CategoryList(CategoryList.Type.ALL_NELL_CATEGORIES, new CatDataTools()), 
-                            nounPhraseMentionModelThreshold, NELLMentionCategorizer.DEFAULT_LABEL_TYPE, 
-                            20);
-                    addAnnotator(mentionCategorizer.produces(), mentionCategorizer);
-                }
+        if (!disabledAnnotators.contains(Annotator.NP_CATEGORIZER)) {
+            System.out.println("Adding to NELLMentionCategorizer PipelineNLPMicro...");
+            NELLMentionCategorizer mentionCategorizer = new NELLMentionCategorizer(
+                    new CategoryList(CategoryList.Type.ALL_NELL_CATEGORIES, new CatDataTools()), 
+                    nounPhraseMentionModelThreshold, NELLMentionCategorizer.DEFAULT_LABEL_TYPE, 
+                    20);
+            addAnnotator(mentionCategorizer.produces(), mentionCategorizer);
+        }
 		
-	   if (!disabledAnnotators.contains(Annotator.CONTEXTLESS_NP_CATEGORIZER)) {
-	      ContextlessNPCategorizer contextlessNPCategorizer = new ContextlessNPCategorizer();
-	      addAnnotator(contextlessNPCategorizer.produces(), contextlessNPCategorizer);
-	    }
+        if (!disabledAnnotators.contains(Annotator.CONTEXTLESS_NP_CATEGORIZER)) {
+            System.out.println("Adding to ContextlessNPCategorizer PipelineNLPMicro...");
+            ContextlessNPCategorizer contextlessNPCategorizer = new ContextlessNPCategorizer();
+            addAnnotator(contextlessNPCategorizer.produces(), contextlessNPCategorizer);
+        }
 
-		if (!disabledAnnotators.contains(Annotator.SEMANTIC_PARSER)) {
-			SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
-			addAnnotator(semanticParser.produces(), semanticParser);		
-		}
+        if (!disabledAnnotators.contains(Annotator.SEMANTIC_PARSER)) {
+            System.out.println("Adding to SamparseAnnotatorSentence PipelineNLPMicro...");
+            SemparseAnnotatorSentence semanticParser = SemparseAnnotatorSentence.fromSerializedModels(SemparseAnnotatorSentence.PARSER_MODEL_PATH, SemparseAnnotatorSentence.SUPERTAGGER_MODEL_PATH);
+            addAnnotator(semanticParser.produces(), semanticParser);		
+        }
 		
-		if (!disabledAnnotators.contains(Annotator.VERB_ANNOTATOR)) {
-			AnnotationVerb annotationVerb = new AnnotationVerb();
-			addAnnotator(annotationVerb.produces(), annotationVerb);
-		}
+        if (!disabledAnnotators.contains(Annotator.VERB_ANNOTATOR)) {
+            System.out.println("Adding to AnnotationVerb PipelineNLPMicro...");
+            AnnotationVerb annotationVerb = new AnnotationVerb();
+            addAnnotator(annotationVerb.produces(), annotationVerb);
+        }
 		
-		if (!disabledAnnotators.contains(Annotator.PPA_DISAMBIGUATOR)) {
-			PPADisambiguator ppa = new PPADisambiguator();	
-			addAnnotator(ppa.produces(), ppa);
-		}
+        if (!disabledAnnotators.contains(Annotator.PPA_DISAMBIGUATOR)) {
+            System.out.println("Adding to PPADisambiguator PipelineNLPMicro...");
+            PPADisambiguator ppa = new PPADisambiguator();	
+            addAnnotator(ppa.produces(), ppa);
+        }
 		
-		if (!disabledAnnotators.contains(Annotator.HDP_PARSER)) {
-			HDPParser hdpParser = HDPParser.getInstance();
-			addAnnotator(hdpParser.produces(), hdpParser);
-		}
+        if (!disabledAnnotators.contains(Annotator.HDP_PARSER)) {
+            System.out.println("Adding to HDPParser PipelineNLPMicro...");
+            HDPParser hdpParser = HDPParser.getInstance();
+            addAnnotator(hdpParser.produces(), hdpParser);
+        }
 
-    if (!disabledAnnotators.contains(Annotator.NOMINALRELATIONS)) {
-      NominalsReader nominalsRelationExtractor = new NominalsReader();
-      addAnnotator(nominalsRelationExtractor.produces(), nominalsRelationExtractor);
+        if (!disabledAnnotators.contains(Annotator.NOMINALRELATIONS)) {
+            System.out.println("Adding to NominalsReader PipelineNLPMicro...");
+            NominalsReader nominalsRelationExtractor = new NominalsReader();
+            addAnnotator(nominalsRelationExtractor.produces(), nominalsRelationExtractor);
+        }
+
+        if (!disabledAnnotators.contains(Annotator.REGEX_EXTRACTOR)) {
+            System.out.println("Adding to RegexExtractor PipelineNLPMicro...");
+            RegexExtractor regex = new RegexExtractor();
+            addAnnotator(regex.produces(), regex);
+        }
+
+        if (!disabledAnnotators.contains(Annotator.EVENT_EXTRACTOR)) {
+            System.out.println("Adding to EventExtractor PipelineNLPMicro...");
+            EventExtractor event = EventExtractor.getInstance();
+            addAnnotator(event.produces(), event);
+        }
+
+        if (!disabledAnnotators.contains(Annotator.OPINION_EXTRACTOR)) {
+            System.out.println("Adding to OpinionExtractor PipelineNLPMicro...");
+            OpinionExtractor opinion = OpinionExtractor.getInstance();
+            addAnnotator(opinion.produces(), opinion);
+        }
     }
-
-		if (!disabledAnnotators.contains(Annotator.REGEX_EXTRACTOR)) {
-			RegexExtractor regex = new RegexExtractor();
-			addAnnotator(regex.produces(), regex);
-		}
-
-		if (!disabledAnnotators.contains(Annotator.EVENT_EXTRACTOR)) {
-			EventExtractor event = EventExtractor.getInstance();
-			addAnnotator(event.produces(), event);
-		}
-
-		if (!disabledAnnotators.contains(Annotator.OPINION_EXTRACTOR)) {
-                    OpinionExtractor opinion = OpinionExtractor.getInstance();
-			addAnnotator(opinion.produces(), opinion);
-		}
-	}
 	
 	public PipelineNLPMicro(PipelineNLPMicro pipeline) {
 		this.annotationOrder = pipeline.annotationOrder;
