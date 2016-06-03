@@ -21,10 +21,18 @@ public class PipelineNLPMicroTest {
   public void testDocument() {
     try {
     PipelineNLPStanford stanfordPipe = new PipelineNLPStanford(30);
+    stanfordPipe.initialize();
 
     List<PipelineNLPMicro.Annotator> disabledAnnotators = new ArrayList<PipelineNLPMicro.Annotator>();
-    if (false) {    // bkdb
+    if (false) {  // These are for debugging
+        disabledAnnotators.add(PipelineNLPMicro.Annotator.NP_CATEGORIZER);
+        disabledAnnotators.add(PipelineNLPMicro.Annotator.CONTEXTLESS_NP_CATEGORIZER);
+        disabledAnnotators.add(PipelineNLPMicro.Annotator.VERB_ANNOTATOR);
+        disabledAnnotators.add(PipelineNLPMicro.Annotator.SEMANTIC_PARSER);
         disabledAnnotators.add(PipelineNLPMicro.Annotator.HDP_PARSER);
+        disabledAnnotators.add(PipelineNLPMicro.Annotator.PPA_DISAMBIGUATOR);
+        disabledAnnotators.add(PipelineNLPMicro.Annotator.NOMINALRELATIONS);
+        disabledAnnotators.add(PipelineNLPMicro.Annotator.REGEX_EXTRACTOR);
         disabledAnnotators.add(PipelineNLPMicro.Annotator.EVENT_EXTRACTOR);
         disabledAnnotators.add(PipelineNLPMicro.Annotator.OPINION_EXTRACTOR);
     }

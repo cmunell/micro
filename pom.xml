@@ -6,7 +6,8 @@
 	<packaging>nar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
-		<library_path>${project.build.directory}/nar/micro-hdp-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}:${project.build.directory}/nar/micro-event-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}:${project.build.directory}/nar/micro-opinion-${project.version}-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}</library_path>
+                <!-- This is a bit tricky because we don't know here exactly which version of these dependencies we're using, or whether we're using the SNAPSHOT or the release.  So the user will just have to worry about keeping this in sync.  Use of "mvn clean" and the tests should be effective in catching when this needs to be updated -->
+		<library_path>${project.build.directory}/nar/micro-hdp-0.0.1-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}:${project.build.directory}/nar/micro-event-0.0.1-${nar.aol}-jni/lib/${nar.aol}/jni:${project.build.directory}:${project.build.directory}/nar/micro-opinion-0.0.1-${nar.aol}-jni/lib/${nar.aol}/jni</library_path>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
@@ -106,7 +107,7 @@
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-util</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.5</version>
 <!-- Block this from hadoop since a conflicting version comes in through org.deeplearning4j via micro-util -->
 <exclusions>
   <exclusion> 
@@ -122,12 +123,12 @@
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-data</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-cat</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.5</version>
 <!-- Block this from hadoop since a conflicting version comes in through org.deeplearning4j via micro-util -->
 <exclusions>
   <exclusion> 
@@ -143,32 +144,32 @@
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-verb</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-ppa</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-ooccat</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-nom</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-regex</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-sem</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 <!-- Block this from hadoop since a conflicting version comes in through org.deeplearning4j via micro-util -->
 <exclusions>
   <exclusion> 
@@ -184,19 +185,19 @@
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-hdp</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 			<type>nar</type>
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-event</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 			<type>nar</type>
 		</dependency>
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-opinion</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 			<type>nar</type>
 		</dependency>
 		<dependency>
@@ -240,10 +241,15 @@
 		</repository>
 	</repositories>
 	<distributionManagement>
-		<repository>
-			<id>rtw-libs-snapshot</id>
-			<name>rtw-libs-snapshot</name>
-			<url>dav:http://rtw.ml.cmu.edu:8081/artifactory/libs-snapshot-local</url>
-		</repository>
+    <snapshotRepository>
+      <id>rtw-libs-snapshot</id>
+      <name>rtw-libs-snapshot</name>
+      <url>dav:http://rtw.ml.cmu.edu:8081/artifactory/libs-snapshot-local</url>
+    </snapshotRepository>
+    <repository>
+      <id>rtw-libs</id>
+      <name>rtw-libs-releases</name>
+      <url>dav:http://rtw.ml.cmu.edu:8081/artifactory/libs-release-local</url>
+    </repository>
 	</distributionManagement>
 </project>
