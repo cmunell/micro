@@ -107,7 +107,7 @@
 		<dependency>
 			<groupId>edu.cmu.ml.rtw</groupId>
 			<artifactId>micro-util</artifactId>
-			<version>0.0.5</version>
+			<version>0.0.7</version>
 <!-- Block this from hadoop since a conflicting version comes in through org.deeplearning4j via micro-util -->
 <exclusions>
   <exclusion> 

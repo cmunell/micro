@@ -2,8 +2,11 @@ package edu.cmu.ml.rtw.micro.scratch;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 import joptsimple.OptionParser;
@@ -39,6 +42,10 @@ public class RunPipelineNLPMicro {
 	private static int maxThreads;
 	private static File outputDataDir;
 	private static File inputDataPath;
+        private static boolean skipIfOutputExists = false;
+        private static Integer numInputs = null;
+        private static Integer numOutputs = 0;
+        private static boolean kbpFormat = false;
 	
 	private static int maxAnnotationSentenceLength;
 	private static PipelineNLPMicro microPipeline;
@@ -49,27 +56,65 @@ public class RunPipelineNLPMicro {
 			return;
 
 		List<File> files = new ArrayList<File>();
-                for (File f : inputDataPath.listFiles()) files.add(f);
+                if (inputDataPath.isFile()) {
+                    files.add(inputDataPath);
+                } else if (inputDataPath.isDirectory()) {
+                    for (File f : inputDataPath.listFiles()) files.add(f);
+                } else {
+                    throw new RuntimeException("Error: Input soecification '" + inputDataPath + "' is niether a file nor a directory!");
+                }
+                
+                final PipelineNLPStanford stanfordPipeline = new PipelineNLPStanford(maxAnnotationSentenceLength);
+                if (kbpFormat) {
+                    // These settings used for 2016 KBP (up to and including LDC2015E77)
+                    Properties props = new Properties();
+                    props.put("clean.xmltags","HEADLINE|POSTER|TURN|P|TEXT|headline|quote|post");
+                    props.put("clean.sentenceendingtags","P|HEADLINE|TEXT|POSTDATE|POST|POSTER|headline|post");
+                    props.put("clean.allowflawedxml","true");
+                    props.put("clean.datetags","datetime|date|dateline");
+                    props.put("clean.docIdtags","id|   id|DOCID");
+                    props.put("clean.docTypetags","type|DOCTYPE");
+                    props.put("clean.turntags","turn");
+                    props.put("clean.speakertags","speaker|POSTER|AUTHOR");
+                    props.put("clean.docAnnotations","docID=doc[id],doctype=doc[type],docsourcetype=doctype[source]");
+                    stanfordPipeline.initialize(null, null, null, null, props, true);
+                } else {
+                    stanfordPipeline.initialize();
+                }
 
                 ThreadMapper<File, Boolean> threads = new ThreadMapper<File, Boolean>(new ThreadMapper.Fn<File, Boolean>() {
-                        ThreadLocal<PipelineNLPStanford> stanfordPipeline = null;  // TODO: Make PipelienNLPStanford thread-safe
 
                         public Boolean apply(File inFile) {
                             try {
-                                dataTools.getOutputWriter().debugWriteln("Processing " + inFile + "...");
-                                stanfordPipeline = new ThreadLocal() {
-                                        protected synchronized Object initialValue() {
-                                            PipelineNLPStanford p = new PipelineNLPStanford(maxAnnotationSentenceLength);
-                                            p.initialize();
-                                            return p;
-                                        }
-                                    };
-				PipelineNLPMicro threadMicroPipeline = new PipelineNLPMicro(microPipeline);
-				PipelineNLP pipeline = stanfordPipeline.get().weld(threadMicroPipeline);
+                                String outFileName;
+                                if (outputType == OutputType.MICRO) {
+                                    outFileName = inFile.getName() + ".json";
+                                } else if (outputType == OutputType.HTML || outputType == OutputType.HTML_NELL_ONLY) {
+                                    outFileName = inFile.getName() + ".html";
+                                } else {
+                                    outFileName = inFile.getName() + ".bson";
+                                }
+                                File outFile = new File(outputDataDir, outFileName);
+                                if (skipIfOutputExists) {
+                                    if (outFile.isFile() && outFile.length() > 0) {
+                                        dataTools.getOutputWriter().debugWriteln("Skipping " + inFile + " due to pre-existing output file " + outFile);
+                                        return true;
+                                    }
+                                }
 
-                                DocumentNLPMutable document = new DocumentNLPInMemory(dataTools, inFile.getName(), FileUtil.readFile(inFile));
+                                dataTools.getOutputWriter().debugWriteln("Processing " + inFile + "...");
+				PipelineNLPMicro threadMicroPipeline = new PipelineNLPMicro(microPipeline);
+				PipelineNLP pipeline = stanfordPipeline.weld(threadMicroPipeline);
+
+                                // Not clear what's to do exactly with document ID construction.
+                                // But for KBP, it's expedient to base it on the file name because
+                                // the files are named by the document ID exactly.
+                                String docID = inFile.getName();
+                                if (kbpFormat) {
+                                    docID = docID.replaceAll(".xml", "");
+                                }
+                                DocumentNLPMutable document = new DocumentNLPInMemory(dataTools, docID, FileUtil.readFile(inFile));
                                 pipeline.run(document);
-                                File outFile = new File(outputDataDir, inFile.getName());
 				
                                 if (outputType == OutputType.MICRO) {
                                     SerializerDocumentNLPMicro microSerial = new SerializerDocumentNLPMicro(dataTools);
@@ -84,19 +129,28 @@ public class RunPipelineNLPMicro {
                                     throw new RuntimeException("TODO: NELL-Only mode");
 				}
 				
+                                synchronized (numOutputs) { 
+                                    numOutputs++;
+                                }
 				return true;
-                            } catch (Exception e) {
+                            } catch (Throwable e) {
+                                StringWriter errors = new StringWriter();
+                                e.printStackTrace(new PrintWriter(errors));
+                                String trace = errors.toString();
+                                dataTools.getOutputWriter().debugWriteln("ERROR: caught exception while processing " + inFile + ": " + e.getMessage() + "\n" + trace);
                                 throw new RuntimeException("apply(" + inFile + ")", e);
                             }
 			}
 		});
 
+                numInputs = files.size();
 		List<Boolean> results = threads.run(files, maxThreads);
 		for (Boolean result : results)
 			if (!result)
 				dataTools.getOutputWriter().debugWriteln("ERROR: Failed to run document through pipeline.");
 		
 		dataTools.getOutputWriter().debugWriteln("Finished running documents through pipeline.");
+                dataTools.getOutputWriter().debugWriteln("Processed " + numInputs + " input files and generated " + numOutputs + " output files.");
 	}
 	
 	private static boolean parseArgs(String[] args) {
@@ -123,7 +177,15 @@ public class RunPipelineNLPMicro {
 		parser.accepts("outputDebugFile").withRequiredArg()
 			.describedAs("Optional path to debug output file")
 			.ofType(File.class);
-		
+                parser.accepts("skipIfOutputExists").withRequiredArg()
+                        .describedAs("Skip input documents for which the output file already exists")
+                        .ofType(Boolean.class)
+                        .defaultsTo(false);
+                parser.accepts("kbpFormat").withRequiredArg()
+                        .describedAs("Assume input is in KBP XML format rather than plaintext")
+                        .ofType(Boolean.class)
+                        .defaultsTo(false);
+                        
 		parser.accepts("nounPhraseMentionModelThreshold").withRequiredArg()
 			.describedAs("The context dependent mention categorization models assign categories to a " +
 						 "noun-phrase when NELL's confidence about the noun-phrase's category is below this " +
